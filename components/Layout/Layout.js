@@ -6,7 +6,7 @@ import Error from "./AppStatus/Error";
 import Loading from "./AppStatus/Loading";
 
 function Layout({ children }) {
-  const { appStatus } = useContext(BillSnapContext);
+  const { appStatus, loading } = useContext(BillSnapContext);
   const app = (status = appStatus) => {
     switch (status) {
       case "noloading":
@@ -25,7 +25,7 @@ function Layout({ children }) {
     </>
   );
 
-  return <div>{app(appStatus)}</div>;
+  return <div>{loading ? <Loading /> : app(appStatus)}</div>;
 }
 
 export default Layout;

@@ -1,23 +1,16 @@
-import { useSession } from "next-auth/react";
 import { createContext, useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 export const BillSnapContext = createContext();
 
 export const BillSnapProvider = ({ children }) => {
-  const { data: session, status: sessionStatus } = useSession();
+  const [user, loading] = useAuthState(auth);
   const [appStatus, setAppStatus] = useState("noloading");
-
-  useEffect(() => {
-    if (sessionStatus == "loading") {
-      setAppStatus("loading");
-    } else {
-      setAppStatus("noloading");
-    }
-  }, [sessionStatus]);
 
   return (
     <BillSnapContext.Provider
-      value={{ appStatus, sessionStatus, session, setAppStatus }}
+      value={{ appStatus, loading, user, setAppStatus }}
     >
       {children}
     </BillSnapContext.Provider>
