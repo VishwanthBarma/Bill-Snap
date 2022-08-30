@@ -1,8 +1,14 @@
+import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
-import Header from "../components/Header";
+import { useContext } from "react";
+import CreateGroup from "../components/Group/CreateGroup";
+import Login from "../components/Layout/AppStatus/Login";
+import Header from "../components/Layout/Header";
+import { BillSnapContext } from "../context/BillSnapContext";
 
 export default function Home() {
+  const { session } = useContext(BillSnapContext);
   return (
     <div>
       <Head>
@@ -13,10 +19,15 @@ export default function Home() {
         />
       </Head>
 
-      {/* Header */}
-      <Header />
-
-      <main>{/* WorkSpace */}</main>
+      {session ? (
+        <>
+          <CreateGroup />
+        </>
+      ) : (
+        <>
+          <Login />
+        </>
+      )}
     </div>
   );
 }
