@@ -21,7 +21,7 @@ function Layout({ children }) {
   const displayContent = (
     <>
       <Header />
-      <main>{children}</main>
+      <main className="px-5 lg:px-20 xl:px-56">{children}</main>
     </>
   );
 

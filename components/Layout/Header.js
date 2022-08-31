@@ -7,7 +7,7 @@ function Header() {
     <div
       className={`${
         user ? "justify-between" : "justify-center"
-      } sticky top-0 z-50 flex items-center bg-black py-2 px-5 border-b border-neutral-500 shadow-md lg:px-20 xl:px-56`}
+      } sticky top-0 z-50 flex items-center bg-black h-16 px-5 border-b border-neutral-500 shadow-md lg:px-20 xl:px-56`}
     >
       <h1 className="logo text-4xl font-logo">BILL SNAP</h1>
       {user && (
