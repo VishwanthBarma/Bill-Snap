@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useContext } from "react";
-import CreateGroup from "../components/Group/CreateGroup";
+import CreateGroup from "../components/HomeGroup/CreateGroup";
 import Login from "../components/Layout/AppStatus/Login";
 import { BillSnapContext } from "../context/BillSnapContext";
 
