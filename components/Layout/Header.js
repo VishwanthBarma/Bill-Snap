@@ -3,7 +3,6 @@ import { BillSnapContext } from "../../context/BillSnapContext";
 
 function Header() {
   const { user } = useContext(BillSnapContext);
-  console.log(user);
   return (
     <div
       className={`${

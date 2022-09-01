@@ -1,4 +1,7 @@
-import React from "react";
+import { getAuth } from "firebase/auth";
+import React, { useContext, useEffect } from "react";
+import { BillSnapContext } from "../../context/BillSnapContext";
+import { app, auth } from "../../firebase";
 import CreateCard from "./CreateCard";
 import GroupCard from "./GroupCard";
 

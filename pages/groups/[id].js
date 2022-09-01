@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import DashBoard from "../../components/Group/DashBoard/DashBoard";
 import Members from "../../components/Group/Members/Members";
@@ -8,6 +9,7 @@ import { BillSnapContext } from "../../context/BillSnapContext";
 function Group({ group }) {
   const { setGroup } = useContext(BillSnapContext);
   const [selectedNav, setSelectedNav] = useState("dashboard");
+  const router = useRouter();
 
   useEffect(() => {
     setGroup(group);
@@ -30,7 +32,10 @@ function Group({ group }) {
 
   return (
     <div className="mt-5 flex flex-col space-y-5 divide-y-2 divide-sky-500">
-      <div className="flex space-y-1 flex-col">
+      <div className="flex flex-col items-start">
+        <button onClick={() => router.push("/")} className="text-sky-500 mb-2">
+          Back
+        </button>
         <h1 className="text-2xl font-bold sub-head">Group Name</h1>
         <h1 className="text-slate-300">
           <span className="font-semibold">10</span> members

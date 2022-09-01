@@ -8,7 +8,7 @@ function MemberCard() {
         src="https://burst.shopifycdn.com/photos/fog-on-dark-waters-edge.jpg?width=1200&format=pjpg&exif=1&iptc=1"
       ></img>
       <div className="flex flex-col">
-        <h1 className="font-semibold text-lg sub-head">Gone Uttam Netha</h1>
+        <h1 className="font-semibold text-lg sub-head2">Gone Uttam Netha</h1>
         <h1 className="text-neutral-400">goneuttamnetha@gmail.com</h1>
       </div>
     </div>
