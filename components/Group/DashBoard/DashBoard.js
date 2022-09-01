@@ -1,7 +1,9 @@
 import { withRouter } from "next/router";
 import React, { useState } from "react";
 import Select from "react-select";
-import PaymentHistory from "./PaymentHistory";
+import PaymentHistory from "../Payments/PaymentHistory";
+import TotalPayment from "../Payments/TotalPayment";
+import UserBillDetails from "./UserBillDetails";
 
 function DashBoard() {
   const [amount, setAmount] = useState("");
@@ -72,18 +74,7 @@ function DashBoard() {
           Submit
         </button>
       </form>
-      <div className="flex flex-col mt-10">
-        <div className="mb-4">
-          <h1 className="font-bold text-lg ">Payment History</h1>
-          <h1 className="text-slate-500 text-sm">
-            Bill Payment History of this group
-          </h1>
-        </div>
-
-        <PaymentHistory />
-
-        {/* Payment History Cards */}
-      </div>
+      <UserBillDetails />
     </div>
   );
 }

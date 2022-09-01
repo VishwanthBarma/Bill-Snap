@@ -28,6 +28,14 @@ background: linear-gradient(to right, #FFB76B 0%, #FFA73D 30%, #FF7C00 60%, #FF7
   -webkit-text-fill-color: transparent;  
 }
 
+.sub-head2{
+  background: #1c92d2;
+background: linear-gradient(to right, #1c92d2 0%, #F2FCFE 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

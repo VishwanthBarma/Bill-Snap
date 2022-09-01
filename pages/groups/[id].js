@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import DashBoard from "../../components/Group/DashBoard/DashBoard";
 import Members from "../../components/Group/Members/Members";
 import NavigationBar from "../../components/Group/NavigationBar";
-import Payments from "../../components/Group/Payments";
+import Payments from "../../components/Group/Payments/Payments";
 import { BillSnapContext } from "../../context/BillSnapContext";
 
 function Group({ group }) {
