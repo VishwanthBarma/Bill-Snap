@@ -27,7 +27,7 @@ function CreateCard() {
         onRequestClose={() => router.back()}
         style={{
           content: {
-            top: "50%",
+            top: "35%",
             left: "50%",
             right: "auto",
             bottom: "auto",

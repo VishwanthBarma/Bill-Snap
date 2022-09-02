@@ -1,8 +1,11 @@
-import React, { useContext } from "react";
+import { signOut } from "firebase/auth";
+import React, { useContext, useState } from "react";
 import { BillSnapContext } from "../../context/BillSnapContext";
+import { auth } from "../../firebase";
 
 function Header() {
   const { user } = useContext(BillSnapContext);
+  const [profileClicked, setProfileClicked] = useState(false);
   return (
     <div
       className={`${
@@ -11,16 +14,27 @@ function Header() {
     >
       <h1 className="logo text-4xl font-logo">BILL SNAP</h1>
       {user && (
-        <div className="h-12 flex items-center space-x-2">
-          <img
-            className="h-12 w-12 rounded-full object-cover border-2 border-orange-400"
-            src={user.photoURL}
-            atl="profile"
-          ></img>
-          <h1 className="font-semibold text-sm text-slate-200">
-            {user.displayName}
-          </h1>
-        </div>
+        <button onClick={() => setProfileClicked(!profileClicked)}>
+          <div className="h-12 flex items-center space-x-2">
+            <img
+              className="h-12 w-12 rounded-full object-cover border-2 border-orange-400"
+              src={user.photoURL}
+              atl="profile"
+            ></img>
+            {!profileClicked ? (
+              <h1 className="font-semibold text-sm text-slate-200">
+                {user.displayName}
+              </h1>
+            ) : (
+              <button
+                onClick={() => auth.signOut()}
+                className="bg-neutral-700 p-2 rounded-xl"
+              >
+                Log Out
+              </button>
+            )}
+          </div>
+        </button>
       )}
     </div>
   );

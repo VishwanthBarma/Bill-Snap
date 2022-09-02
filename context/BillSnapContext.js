@@ -9,10 +9,12 @@ export const BillSnapProvider = ({ children }) => {
   const [appStatus, setAppStatus] = useState("noloading");
   const [group, setGroup] = useState(null);
   const [users, setUsers] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     if (!user) return;
     saveUser();
+    getCurrentUser();
   }, [user]);
 
   const saveUser = () => {
@@ -22,6 +24,15 @@ export const BillSnapProvider = ({ children }) => {
       uid: user?.uid,
       photoURL: user?.photoURL,
     });
+  };
+
+  const getCurrentUser = () => {
+    db.collection("users")
+      .doc(user?.uid)
+      .get()
+      .then((doc) => {
+        setCurrentUser(doc.data());
+      });
   };
 
   const getAllUsers = () => {
@@ -43,6 +54,7 @@ export const BillSnapProvider = ({ children }) => {
         setGroup,
         getAllUsers,
         users,
+        currentUser,
       }}
     >
       {children}

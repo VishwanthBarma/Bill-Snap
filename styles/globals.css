@@ -52,3 +52,10 @@ input[type=number] {
   color: #151515;
 }
 
+.react-select-container {
+  color:#151515;
+}
+
+.react-select{
+  color: #f7797d;
+}
