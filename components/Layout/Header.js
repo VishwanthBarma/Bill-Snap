@@ -1,4 +1,5 @@
 import { signOut } from "firebase/auth";
+import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
 import { BillSnapContext } from "../../context/BillSnapContext";
 import { auth } from "../../firebase";
@@ -6,6 +7,7 @@ import { auth } from "../../firebase";
 function Header() {
   const { user } = useContext(BillSnapContext);
   const [profileClicked, setProfileClicked] = useState(false);
+  const router = useRouter();
   return (
     <div
       className={`${
@@ -27,7 +29,10 @@ function Header() {
               </h1>
             ) : (
               <button
-                onClick={() => auth.signOut()}
+                onClick={() => {
+                  auth.signOut();
+                  router.push("/");
+                }}
                 className="bg-neutral-700 p-2 rounded-xl"
               >
                 Log Out

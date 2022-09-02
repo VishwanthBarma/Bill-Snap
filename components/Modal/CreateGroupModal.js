@@ -28,21 +28,32 @@ function CreateGroupModal() {
   };
 
   const handleSubmit = (e) => {
-    db.collection("groups").add({
-      title: title,
-      members: [
-        {
-          email: user.email,
-          displayName: user.displayName,
-          uid: user.uid,
-          photoURL: user.photoURL,
-        },
-        ...selectedGroupMembers,
-      ],
-      groupLength: selectedGroupMembers.length + 1,
-      totalRevenue: 0,
-      payments: [],
-    });
+    db.collection("groups")
+      .add({
+        title: title,
+        groupLength: selectedGroupMembers.length + 1,
+        totalRevenue: 0,
+        members: [
+          {
+            email: user.email,
+            displayName: user.displayName,
+            uid: user.uid,
+            photoURL: user.photoURL,
+            moneyToGet: 0,
+            moneyToGive: 0,
+            takeFrom: [],
+            giveTo: [],
+          },
+          ...selectedGroupMembers,
+        ],
+        payments: [],
+      })
+      .then((doc) => {
+        console.log("Document written with ID : ", doc.id);
+      });
+
+    setTitle("");
+    setSelectedGroupMembers([]);
   };
 
   const multiSelectStyles = {
@@ -109,3 +120,17 @@ function CreateGroupModal() {
 }
 
 export default CreateGroupModal;
+
+// members: [
+//     {
+//       email: user.email,
+//       displayName: user.displayName,
+//       uid: user.uid,
+//       photoURL: user.photoURL,
+//       moneyToGet: 0,
+//       moneyToGive: 0,
+//       takeFrom: [],
+//       giveTo: [],
+//     },
+//     ...selectedGroupMembers,
+//   ],

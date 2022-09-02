@@ -5,7 +5,7 @@ import PaymentHistory from "../Payments/PaymentHistory";
 import TotalPayment from "../Payments/TotalPayment";
 import UserBillDetails from "./UserBillDetails";
 
-function DashBoard() {
+function DashBoard({ group }) {
   const [amount, setAmount] = useState("");
   const [title, setTitle] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
@@ -74,7 +74,7 @@ function DashBoard() {
           Submit
         </button>
       </form>
-      <UserBillDetails />
+      <UserBillDetails group={group} />
     </div>
   );
 }

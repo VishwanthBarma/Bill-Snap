@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { BillSnapContext } from "../../context/BillSnapContext";
 import { app, auth, db } from "../../firebase";
-import MiniLoading from "../Layout/AppStatus/MiniLoading";
+import MiniLoading from "../Loading/MiniLoading";
 import CreateCard from "./CreateCard";
 import GroupCard from "./GroupCard";
 
@@ -24,7 +24,7 @@ function CreateGroup() {
           <MiniLoading />
         ) : (
           groupsSnapshot.docs.map((group) => (
-            <GroupCard key={group.id} group={group} />
+            <GroupCard key={group.id} group={group.data()} id={group.id} />
           ))
         )}
       </div>
