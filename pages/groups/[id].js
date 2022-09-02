@@ -35,7 +35,7 @@ function Group({ groupID }) {
       case "members":
         return <Members />;
       default:
-        return <DashBoard />;
+        return <DashBoard groupID={groupID} />;
     }
   };
 

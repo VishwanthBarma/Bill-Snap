@@ -1,21 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
+import { BillSnapContext } from "../../../context/BillSnapContext";
 import MemberCard from "./MemberCard";
 
 function Members() {
+  const { group } = useContext(BillSnapContext);
   return (
     <div className="flex flex-col space-y-4">
       <div>
         <h1 className="font-bold text-xl">Group Members</h1>
       </div>
       <div>
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
-        <MemberCard />
+        {group?.members.map((member) => (
+          <MemberCard
+            photoURL={member?.photoURL}
+            displayName={member?.displayName}
+            email={member?.email}
+          />
+        ))}
       </div>
     </div>
   );

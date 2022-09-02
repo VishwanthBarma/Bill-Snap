@@ -12,6 +12,7 @@ export const BillSnapProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [group, setGroup] = useState(null);
   const [userCurrentGroupDetails, setUserCurrentGroupDetails] = useState(null);
+  const [otherUserGroupDetails, setOtherUserGroupDetails] = useState(null);
 
   useEffect(() => {
     if (!user) return;
@@ -57,7 +58,36 @@ export const BillSnapProvider = ({ children }) => {
 
   const getUserCurrentGroupDetails = async (groupID) => {
     getCurrentGroupDetails(groupID);
-    setUserCurrentGroupDetails(group);
+    const data = group?.members.filter((item) => item.email == user.email);
+    if (data) {
+      setUserCurrentGroupDetails(data[0]);
+    }
+  };
+
+  const getOtherUserGroupDetails = async (groupID) => {
+    getCurrentGroupDetails(groupID);
+    const data = group?.members.filter((item) => item.email != user.email);
+    if (data) {
+      setOtherUserGroupDetails(data);
+    }
+  };
+
+  const updateUserMember = (amount) => {
+    setUserCurrentGroupDetails((prev) => {
+      const newAmount = prev.moneyToGive + amount;
+      return [
+        {
+          displayName: prev.displayName,
+          email: prev.email,
+          giveTo: [],
+          takeFrom: [],
+          moneyToGet: newAmount,
+          moneyToGive: prev.moneyToGive,
+          photoURL: prev.photoURL,
+          uid: prev.uid,
+        },
+      ];
+    });
   };
 
   return (
@@ -74,6 +104,9 @@ export const BillSnapProvider = ({ children }) => {
         getCurrentGroupDetails,
         userCurrentGroupDetails,
         getUserCurrentGroupDetails,
+        otherUserGroupDetails,
+        getOtherUserGroupDetails,
+        updateUserMember,
       }}
     >
       {children}

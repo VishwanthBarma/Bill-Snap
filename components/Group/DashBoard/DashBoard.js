@@ -1,35 +1,105 @@
+import { increment, updateDoc } from "firebase/firestore";
+import Multiselect from "multiselect-react-dropdown";
 import { withRouter } from "next/router";
-import React, { useState } from "react";
+import { userAgent } from "next/server";
+import React, { useContext, useEffect, useState } from "react";
 import Select from "react-select";
+import { BillSnapContext } from "../../../context/BillSnapContext";
+import { db } from "../../../firebase";
 import PaymentHistory from "../Payments/PaymentHistory";
 import TotalPayment from "../Payments/TotalPayment";
 import UserBillDetails from "./UserBillDetails";
 
-function DashBoard({ group }) {
+function DashBoard({ groupID }) {
+  const {
+    group,
+    user,
+    getOtherUserGroupDetails,
+    updateUserMember,
+    userCurrentGroupDetails,
+    otherUserGroupDetails,
+    getCurrentGroupDetails,
+  } = useContext(BillSnapContext);
   const [amount, setAmount] = useState("");
   const [title, setTitle] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    getOptions();
+    getCurrentGroupDetails(groupID);
+  }, [group]);
+
   const handleSubmit = (e) => {
-    e.preventDefault();
+    const splitAmount = amount / (selectedMembers.length + 1);
+
+    db.collection("groups").doc(groupID).collection("payments").doc(title).set({
+      paymentTitle: title,
+      paymentAmount: amount,
+      selectedMembers: selectedMembers,
+      splitAmount: splitAmount,
+    });
+
+    // getOtherUserGroupDetails(groupID);
+
+    // const addingAmount = amount - splitAmount;
+
+    // handleSplitAmount();
+    //Update
+
+    // ADD NOTIFICATION
+
     setAmount("");
     setTitle("");
     setSelectedMembers([]);
   };
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
 
-  const colorStyles = {
-    control: (styles) => ({
-      ...styles,
-      backgroundColor: "#2b2b2b",
-      border: "none",
+  const handleSplitAmount = async (addingAmount) => {
+    // updating total revenue
+    updateUserMember(addingAmount);
+
+    const docRef = db.collection("groups").doc(groupID);
+    await updateDoc(docRef, {
+      totalRevenue: increment(amount),
+    });
+
+    await updateDoc(docRef, {
+      members: {
+        userCurrentGroupDetails,
+        ...otherUserGroupDetails,
+      },
+    });
+  };
+
+  const getOptions = () => {
+    const otherMembers = group?.members?.filter(
+      (member) => member.email != user.email
+    );
+    setOptions(otherMembers);
+  };
+
+  const multiSelectStyles = {
+    multiselectContainer: {
+      borderRadius: "30px",
+      zIndex: "0",
+      position: "realtive",
+    },
+
+    searchBox: {
+      background: "#262626",
       borderRadius: "12px",
-      padding: "5px",
-      color: "#fff",
-    }),
+      border: "0",
+      padding: "10px",
+    },
+
+    optionContainer: {
+      borderRadius: "12px",
+      padding: "8px",
+      zIndex: "50",
+      position: "absolute",
+      width: "100%",
+      backgroundColor: "#262626",
+    },
   };
 
   return (
@@ -59,13 +129,13 @@ function DashBoard({ group }) {
           type="number"
           required
         ></input>
-        <Select
-          onChange={(item) => setSelectedMembers(item)}
-          className="select"
-          styles={colorStyles}
+        <Multiselect
+          avoidHighlightFirstOption={true}
           value={selectedMembers}
+          style={multiSelectStyles}
           options={options}
-          isMulti={true}
+          displayValue="displayName"
+          onSelect={(item) => setSelectedMembers(item)}
         />
         <button
           type="submit"
@@ -74,7 +144,7 @@ function DashBoard({ group }) {
           Submit
         </button>
       </form>
-      <UserBillDetails group={group} />
+      <UserBillDetails />
     </div>
   );
 }

@@ -120,17 +120,3 @@ function CreateGroupModal() {
 }
 
 export default CreateGroupModal;
-
-// members: [
-//     {
-//       email: user.email,
-//       displayName: user.displayName,
-//       uid: user.uid,
-//       photoURL: user.photoURL,
-//       moneyToGet: 0,
-//       moneyToGive: 0,
-//       takeFrom: [],
-//       giveTo: [],
-//     },
-//     ...selectedGroupMembers,
-//   ],

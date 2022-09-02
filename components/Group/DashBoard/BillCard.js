@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { BillSnapContext } from "../../../context/BillSnapContext";
 
 function BillCard() {
-  const { group } = useContext(BillSnapContext);
+  const { group, userCurrentGroupDetails } = useContext(BillSnapContext);
   return (
     <div className="flex flex-col items-center bg-neutral-800 space-y-3 rounded-xl divide-y-2 divide-sky-500 p-2">
       <div className="flex flex-col space-y-1 items-center">
@@ -20,13 +20,19 @@ function BillCard() {
         <div className="flex flex-col items-center bg-neutral-900 w-44 p-2 rounded-xl">
           <h1 className="font-semibold">You are owed</h1>
           <h1 className="font-semibold text-lg">
-            Rs. <span className="sub-head2 text-2xl font-bold">200</span>
+            Rs.{" "}
+            <span className="sub-head2 text-2xl font-bold">
+              {userCurrentGroupDetails?.moneyToGet}
+            </span>
           </h1>
         </div>
         <div className="flex flex-col items-center bg-neutral-900 w-44 p-2 rounded-xl">
           <h1 className="font-semibold">You owe</h1>
           <h1 className="font-semibold text-lg">
-            Rs <span className="sub-head2 text-2xl font-bold">5000</span>
+            Rs{" "}
+            <span className="sub-head2 text-2xl font-bold">
+              {userCurrentGroupDetails?.moneyToGive}
+            </span>
           </h1>
         </div>
       </div>
