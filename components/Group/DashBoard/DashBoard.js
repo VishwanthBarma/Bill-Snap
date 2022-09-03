@@ -45,6 +45,7 @@ function DashBoard({ groupID }) {
         paymentTitle: title,
         paymentAmount: amount,
         splitAmount: splitAmount,
+        paidBy: user.displayName,
       })
       .then((doc) => {
         selectedMembers.forEach((member) => {
@@ -87,47 +88,12 @@ function DashBoard({ groupID }) {
         totalExpense: increment(amount),
       });
 
-    // update how much i should get
-    // and
-    // how much he or she should give in members collection of groups.
-
-    // db.collection("groups").doc(groupID).collection("payments").doc(title).set({
-    //   paymentTitle: title,
-    //   paymentAmount: amount,
-    //   selectedMembers: selectedMembers,
-    //   splitAmount: splitAmount,
-    // });
-
-    // getOtherUserGroupDetails(groupID);
-
-    // const addingAmount = amount - splitAmount;
-
-    // handleSplitAmount();
-    //Update
-
     // ADD NOTIFICATION
 
     setAmount("");
     setTitle("");
     setSelectedMembers([]);
   };
-
-  // const handleSplitAmount = async (addingAmount) => {
-  //   // updating total revenue
-  //   updateUserMember(addingAmount);
-
-  //   const docRef = db.collection("groups").doc(groupID);
-  //   await updateDoc(docRef, {
-  //     totalRevenue: increment(amount),
-  //   });
-
-  //   await updateDoc(docRef, {
-  //     members: {
-  //       userCurrentGroupDetails,
-  //       ...otherUserGroupDetails,
-  //     },
-  //   });
-  // };
 
   const getOptions = () => {
     const otherMembers = group?.involvedMembers?.filter(

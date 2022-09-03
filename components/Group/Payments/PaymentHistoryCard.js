@@ -1,24 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProgressBar from "./ProgressBar";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { TiTick } from "react-icons/ti";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { db } from "../../../firebase";
+import { useRouter } from "next/router";
+import MiniLoading from "../../Loading/MiniLoading";
+import WaveLoading from "../../Loading/WaveLoading";
 
-function PaymentHistoryCard() {
+function PaymentHistoryCard({ paymentData, paymentID }) {
+  const router = useRouter();
+
+  const groupID = router.query.id;
+  const [membersSnapShot, loading] = useCollection(
+    db
+      .collection("groups")
+      .doc(groupID)
+      .collection("payments")
+      .doc(paymentID)
+      .collection("selectedMembers")
+  );
+
+  const [paymentSelectedMembers, setPaymentSelectedMembers] = useState(null);
+
   return (
     <div className="flex flex-col">
       <div className="bg-zinc-800 bg-opacity-80 flex flex-col p-3 rounded-xl text-neutral-400 m-3">
-        <h1 className="font-bold text-lg sub-head2">Goa Hotel Bill</h1>
-        <h1>
-          Paid by:{" "}
-          <span className="font-semibold text-lg text-slate-100">someone</span>
+        <h1 className="font-bold text-lg sub-head2">
+          {paymentData?.paymentTitle}
         </h1>
-        <h1>
+        <div>
+          <h1>
+            Paid by:{" "}
+            <span className="font-semibold text-md text-slate-100">
+              {paymentData?.paidBy}
+            </span>
+          </h1>
+        </div>
+        <h1 className="flex items-center">
           Selected members{" "}
-          <span className="font-semibold text-lg text-slate-100">5</span>
+          <span className="font-semibold text-md text-slate-100 ml-2">
+            {loading ? <WaveLoading /> : membersSnapShot?.docs.length}
+          </span>
         </h1>
         <h1>
-          Amount: Rs.{" "}
-          <span className="font-semibold text-lg text-slate-100">2000</span>/-
+          Amount: <span className="text-slate-300">Rs.</span>
+          <span className="font-semibold ml-1 text-lg text-slate-100">
+            {paymentData?.paymentAmount}
+          </span>
+          /-
         </h1>
         <div className="flex flex-col text-white mt-3">
           {/* <button className="bg-sky-500 p-2 rounded-xl hover:bg-sky-400 active:bg-sky-600">

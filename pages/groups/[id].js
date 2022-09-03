@@ -32,7 +32,7 @@ function Group({ groupID }) {
   const app = (status) => {
     switch (status) {
       case "payments":
-        return <Payments />;
+        return <Payments groupID={groupID} />;
       case "members":
         return <Members />;
       default:

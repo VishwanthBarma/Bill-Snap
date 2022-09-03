@@ -30,6 +30,8 @@ export const BillSnapProvider = ({ children }) => {
 
   const [otherUserGroupDetails, setOtherUserGroupDetails] = useState(null);
 
+  const [currentGroupPayments, setCurrentGroupPayments] = useState(null);
+
   useEffect(() => {
     if (!user) return;
     saveUser();
@@ -88,6 +90,23 @@ export const BillSnapProvider = ({ children }) => {
       });
   };
 
+  // get all the payments of the current group
+  const getCurrentGroupPayments = (groupID) => {
+    db.collection("groups")
+      .doc(groupID)
+      .collection("payments")
+      .get()
+      .then((payments) => {
+        payments.forEach((item) => {});
+        setCurrentGroupPayments(payments.docs);
+      });
+  };
+
+  // need to modify
+  //
+  //
+  //
+
   const getOtherUserGroupDetails = async (groupID) => {
     getCurrentGroupDetails(groupID);
     const data = group?.members.filter((item) => item.email != user.email);
@@ -133,6 +152,8 @@ export const BillSnapProvider = ({ children }) => {
         updateUserMember,
         getAllInvolvedGroups,
         allInvolvedGroups,
+        getCurrentGroupPayments,
+        currentGroupPayments,
       }}
     >
       {children}

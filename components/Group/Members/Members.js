@@ -4,7 +4,6 @@ import MemberCard from "./MemberCard";
 
 function Members() {
   const { group } = useContext(BillSnapContext);
-  console.log(group);
   return (
     <div className="flex flex-col space-y-4">
       <div>
