@@ -30,7 +30,7 @@ function BillCard() {
         <div className="flex flex-col items-center bg-neutral-900 w-44 p-2 rounded-xl">
           <h1 className="font-semibold">You owe</h1>
           <h1 className="font-semibold text-lg">
-            Rs{" "}
+            Rs.{" "}
             <span className="sub-head2 text-2xl font-bold">
               {userCurrentGroupDetails?.youOwed}
             </span>

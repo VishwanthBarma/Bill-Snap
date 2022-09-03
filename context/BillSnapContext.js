@@ -1,16 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
-import {
-  collection,
-  collectionGroup,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  QuerySnapshot,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 export const BillSnapContext = createContext();
 
@@ -27,8 +18,6 @@ export const BillSnapProvider = ({ children }) => {
   const [allInvolvedGroups, setAllInvolvedGroups] = useState(null);
 
   const [userCurrentGroupDetails, setUserCurrentGroupDetails] = useState(null);
-
-  const [otherUserGroupDetails, setOtherUserGroupDetails] = useState(null);
 
   const [currentGroupPayments, setCurrentGroupPayments] = useState(null);
 
@@ -90,7 +79,6 @@ export const BillSnapProvider = ({ children }) => {
       });
   };
 
-  // get all the payments of the current group
   const getCurrentGroupPayments = (groupID) => {
     db.collection("groups")
       .doc(groupID)
@@ -100,37 +88,6 @@ export const BillSnapProvider = ({ children }) => {
         payments.forEach((item) => {});
         setCurrentGroupPayments(payments.docs);
       });
-  };
-
-  // need to modify
-  //
-  //
-  //
-
-  const getOtherUserGroupDetails = async (groupID) => {
-    getCurrentGroupDetails(groupID);
-    const data = group?.members.filter((item) => item.email != user.email);
-    if (data) {
-      setOtherUserGroupDetails(data);
-    }
-  };
-
-  const updateUserMember = (amount) => {
-    setUserCurrentGroupDetails((prev) => {
-      const newAmount = prev.moneyToGive + amount;
-      return [
-        {
-          displayName: prev.displayName,
-          email: prev.email,
-          giveTo: [],
-          takeFrom: [],
-          moneyToGet: newAmount,
-          moneyToGive: prev.moneyToGive,
-          photoURL: prev.photoURL,
-          uid: prev.uid,
-        },
-      ];
-    });
   };
 
   return (
@@ -144,12 +101,9 @@ export const BillSnapProvider = ({ children }) => {
         users,
         currentUser,
         group,
+        getUserCurrentGroupDetails,
         getCurrentGroupDetails,
         userCurrentGroupDetails,
-        getUserCurrentGroupDetails,
-        otherUserGroupDetails,
-        getOtherUserGroupDetails,
-        updateUserMember,
         getAllInvolvedGroups,
         allInvolvedGroups,
         getCurrentGroupPayments,

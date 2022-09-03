@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import ProgressBar from "./ProgressBar";
-import { IoCheckmarkDoneCircle } from "react-icons/io5";
+import React, { useContext, useEffect, useState } from "react";
 import { TiTick } from "react-icons/ti";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../../firebase";
 import { useRouter } from "next/router";
-import MiniLoading from "../../Loading/MiniLoading";
 import WaveLoading from "../../Loading/WaveLoading";
+import { BillSnapContext } from "../../../context/BillSnapContext";
 
 function PaymentHistoryCard({ paymentData, paymentID }) {
+  const { user } = useContext(BillSnapContext);
   const router = useRouter();
+
+  const [amIPaid, setAmIPaid] = useState(null);
 
   const groupID = router.query.id;
   const [membersSnapShot, loading] = useCollection(
@@ -21,7 +22,64 @@ function PaymentHistoryCard({ paymentData, paymentID }) {
       .collection("selectedMembers")
   );
 
-  const [paymentSelectedMembers, setPaymentSelectedMembers] = useState(null);
+  useEffect(() => {
+    checkAmIPaid();
+  }, [paymentID]);
+
+  const isPaidByMe = () => paymentData?.paidBy == user?.displayName;
+
+  const checkIsMeASelectedMember = () => {
+    const amIMember = membersSnapShot?.docs.findIndex(
+      (member) => member.data().email == user?.email
+    );
+    return amIMember == -1 ? false : true;
+  };
+
+  const checkAmIPaid = () => {
+    db.collection("groups")
+      .doc(groupID)
+      .collection("payments")
+      .doc(paymentID)
+      .collection("selectedMembers")
+      .where("email", "==", user?.email)
+      .get()
+      .then((doc) => {
+        const value = doc?.docs[0]?.data().paid;
+        setAmIPaid(value);
+      });
+  };
+
+  const showStatus = () => {
+    if (isPaidByMe()) {
+      return (
+        <div className="flex items-center justify-center bg-neutral-900 p-2 rounded-xl">
+          <h1 className="text-sm font-semibold">
+            You Paid <span className="text-lg">{paymentData.splitAmount} </span>
+            INR
+          </h1>
+        </div>
+      );
+    } else if (checkIsMeASelectedMember() && amIPaid) {
+      return (
+        <div className="flex justify-center bg-green-500 p-2 rounded-xl items-center space-x-1">
+          <div className="bg-white rounded-full">
+            <TiTick className="h-5 w-5 text-green-500" />
+          </div>
+          <h1 className="font-bold">Payment Done</h1>
+        </div>
+      );
+    } else {
+      return (
+        <button className="bg-sky-500 p-1 rounded-xl hover:bg-sky-400 active:bg-sky-600">
+          <h1 className="font-semibold">
+            Pay{" "}
+            <span className="text-lg font-bold">{paymentData.splitAmount}</span>{" "}
+            INR
+          </h1>
+        </button>
+      );
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -50,26 +108,7 @@ function PaymentHistoryCard({ paymentData, paymentID }) {
           </span>
           /-
         </h1>
-        <div className="flex flex-col text-white mt-3">
-          {/* <button className="bg-sky-500 p-2 rounded-xl hover:bg-sky-400 active:bg-sky-600">
-            <h1 className="font-bold">
-              Pay <span className="">200</span> INR
-            </h1>
-          </button>
-          <div className="flex justify-center bg-green-500 p-2 rounded-xl mt-2 items-center space-x-1">
-            <div className="bg-white rounded-full">
-              <TiTick className="h-5 w-5 text-green-500" />
-            </div>
-            <h1 className="font-bold">Payment Done</h1>
-          </div>
-          <h1 className="text-sm">
-            You Paid <span className="text-lg">200 INR</span>
-          </h1>
-          <button className="bg-neutral-900 mt-2 p-2 rounded-xl hover:bg-neutral-700 active:opacity-50">
-            <h1 className="font-semibold">Others to Pay</h1>
-          </button>
-          <ProgressBar progressPercentage={10} /> */}
-        </div>
+        <div className="flex flex-col text-white mt-3">{showStatus()}</div>
       </div>
     </div>
   );
