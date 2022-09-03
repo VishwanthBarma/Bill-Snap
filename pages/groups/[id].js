@@ -15,6 +15,7 @@ function Group({ groupID }) {
     getCurrentGroupDetails,
     getUserCurrentGroupDetails,
     userCurrentGroupDetails,
+    setAppStatus,
   } = useContext(BillSnapContext);
   const [selectedNav, setSelectedNav] = useState("dashboard");
   const router = useRouter();

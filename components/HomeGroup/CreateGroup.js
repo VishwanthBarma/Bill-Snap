@@ -8,22 +8,22 @@ import CreateCard from "./CreateCard";
 import GroupCard from "./GroupCard";
 
 function CreateGroup() {
-  const { user, currentUser } = useContext(BillSnapContext);
-  const [groupsSnapshot, loading] = useCollection(
-    db
-      .collection("groups")
-      .where("members", "array-contains-any", [currentUser])
-  );
+  const { user, currentUser, getAllInvolvedGroups, allInvolvedGroups } =
+    useContext(BillSnapContext);
+
+  useEffect(() => {
+    getAllInvolvedGroups();
+  }, [allInvolvedGroups]);
 
   return (
     <div className="mt-10">
       <h1 className="font-bold text-3xl">Your Bill Snap Groups</h1>
       <div className="flex mt-5 flex-wrap">
         <CreateCard />
-        {loading ? (
+        {allInvolvedGroups?.length == 0 ? (
           <MiniLoading />
         ) : (
-          groupsSnapshot.docs.map((group) => (
+          allInvolvedGroups?.map((group) => (
             <GroupCard key={group.id} group={group.data()} id={group.id} />
           ))
         )}

@@ -6,9 +6,9 @@ import { db } from "../../firebase";
 import Multiselect from "multiselect-react-dropdown";
 
 function CreateGroupModal() {
-  const { user } = useContext(BillSnapContext);
+  const { user, currentUser } = useContext(BillSnapContext);
   const [title, setTitle] = useState("");
-  const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState();
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const [options, setOptions] = useState([]);
@@ -28,29 +28,64 @@ function CreateGroupModal() {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+    // setSelectedGroupMembers((prev) => [...prev, currentUser]);
+    // console.log(selectedGroupMembers);
     db.collection("groups")
       .add({
         title: title,
+        totalExpense: 0,
         groupLength: selectedGroupMembers.length + 1,
-        totalRevenue: 0,
-        members: [
-          {
-            email: user.email,
-            displayName: user.displayName,
-            uid: user.uid,
-            photoURL: user.photoURL,
-            moneyToGet: 0,
-            moneyToGive: 0,
-            takeFrom: [],
-            giveTo: [],
-          },
-          ...selectedGroupMembers,
-        ],
-        payments: [],
+        involvedMembers: [...selectedGroupMembers, currentUser],
       })
       .then((doc) => {
-        console.log("Document written with ID : ", doc.id);
+        selectedGroupMembers.forEach((groupMember) => {
+          db.collection("groups")
+            .doc(doc.id)
+            .collection("members")
+            .doc(groupMember.email)
+            .set({
+              ...groupMember,
+              youAreOwed: 0,
+              youOwed: 0,
+            });
+        });
+
+        db.collection("groups")
+          .doc(doc.id)
+          .collection("members")
+          .doc(currentUser.email)
+          .set({
+            ...currentUser,
+            youAreOwed: 0,
+            youOwed: 0,
+          });
+
+        console.log("Written Document Successfully with ID: ", doc.id);
       });
+    // db.collection("groups")
+    //   .add({
+    //     title: title,
+    //     groupLength: selectedGroupMembers.length + 1,
+    //     totalRevenue: 0,
+    //     members: [
+    //       {
+    //         email: user.email,
+    //         displayName: user.displayName,
+    //         uid: user.uid,
+    //         photoURL: user.photoURL,
+    //         moneyToGet: 0,
+    //         moneyToGive: 0,
+    //         takeFrom: [],
+    //         giveTo: [],
+    //       },
+    //       ...selectedGroupMembers,
+    //     ],
+    //     payments: [],
+    //   })
+    //   .then((doc) => {
+    //     console.log("Document written with ID : ", doc.id);
+    //   });
 
     setTitle("");
     setSelectedGroupMembers([]);
@@ -100,6 +135,7 @@ function CreateGroupModal() {
           </div>
           {/* select members */}
           <Multiselect
+            avoidHighlightFirstOption={true}
             style={multiSelectStyles}
             options={options}
             displayValue="displayName"

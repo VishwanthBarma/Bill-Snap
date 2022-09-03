@@ -19,6 +19,7 @@ function DashBoard({ groupID }) {
     userCurrentGroupDetails,
     otherUserGroupDetails,
     getCurrentGroupDetails,
+    getUserCurrentGroupDetails,
   } = useContext(BillSnapContext);
   const [amount, setAmount] = useState("");
   const [title, setTitle] = useState("");
@@ -28,17 +29,74 @@ function DashBoard({ groupID }) {
   useEffect(() => {
     getOptions();
     getCurrentGroupDetails(groupID);
+    getUserCurrentGroupDetails(groupID);
   }, [group]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (selectedMembers.length == 0) return;
     const splitAmount = amount / (selectedMembers.length + 1);
+    const youAreOwedAmount = amount - splitAmount;
 
-    db.collection("groups").doc(groupID).collection("payments").doc(title).set({
-      paymentTitle: title,
-      paymentAmount: amount,
-      selectedMembers: selectedMembers,
-      splitAmount: splitAmount,
-    });
+    db.collection("groups")
+      .doc(groupID)
+      .collection("payments")
+      .add({
+        paymentTitle: title,
+        paymentAmount: amount,
+        splitAmount: splitAmount,
+      })
+      .then((doc) => {
+        selectedMembers.forEach((member) => {
+          db.collection("groups")
+            .doc(groupID)
+            .collection("payments")
+            .doc(doc.id)
+            .collection("selectedMembers")
+            .doc(member.email)
+            .set({
+              paid: false,
+              amountToPay: splitAmount,
+              displayName: member.displayName,
+              email: member.email,
+              uid: member.uid,
+              photoURL: member.photoURL,
+            });
+
+          db.collection("groups")
+            .doc(groupID)
+            .collection("members")
+            .doc(member.email)
+            .update({
+              youOwed: increment(splitAmount),
+            });
+        });
+      });
+
+    db.collection("groups")
+      .doc(groupID)
+      .collection("members")
+      .doc(user.email)
+      .update({
+        youAreOwed: increment(youAreOwedAmount),
+      });
+    // update total expanse
+    db.collection("groups")
+      .doc(groupID)
+      .update({
+        totalExpense: increment(amount),
+      });
+
+    // update how much i should get
+    // and
+    // how much he or she should give in members collection of groups.
+
+    // db.collection("groups").doc(groupID).collection("payments").doc(title).set({
+    //   paymentTitle: title,
+    //   paymentAmount: amount,
+    //   selectedMembers: selectedMembers,
+    //   splitAmount: splitAmount,
+    // });
 
     // getOtherUserGroupDetails(groupID);
 
@@ -54,25 +112,25 @@ function DashBoard({ groupID }) {
     setSelectedMembers([]);
   };
 
-  const handleSplitAmount = async (addingAmount) => {
-    // updating total revenue
-    updateUserMember(addingAmount);
+  // const handleSplitAmount = async (addingAmount) => {
+  //   // updating total revenue
+  //   updateUserMember(addingAmount);
 
-    const docRef = db.collection("groups").doc(groupID);
-    await updateDoc(docRef, {
-      totalRevenue: increment(amount),
-    });
+  //   const docRef = db.collection("groups").doc(groupID);
+  //   await updateDoc(docRef, {
+  //     totalRevenue: increment(amount),
+  //   });
 
-    await updateDoc(docRef, {
-      members: {
-        userCurrentGroupDetails,
-        ...otherUserGroupDetails,
-      },
-    });
-  };
+  //   await updateDoc(docRef, {
+  //     members: {
+  //       userCurrentGroupDetails,
+  //       ...otherUserGroupDetails,
+  //     },
+  //   });
+  // };
 
   const getOptions = () => {
-    const otherMembers = group?.members?.filter(
+    const otherMembers = group?.involvedMembers?.filter(
       (member) => member.email != user.email
     );
     setOptions(otherMembers);

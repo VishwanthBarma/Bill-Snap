@@ -1,17 +1,33 @@
 import { createContext, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
-import { doc, getDoc, where } from "firebase/firestore";
+import {
+  collection,
+  collectionGroup,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  QuerySnapshot,
+  where,
+} from "firebase/firestore";
 
 export const BillSnapContext = createContext();
 
 export const BillSnapProvider = ({ children }) => {
   const [user, loading] = useAuthState(auth);
   const [appStatus, setAppStatus] = useState("noloading");
+
   const [users, setUsers] = useState(null);
+
   const [currentUser, setCurrentUser] = useState(null);
+
   const [group, setGroup] = useState(null);
+
+  const [allInvolvedGroups, setAllInvolvedGroups] = useState(null);
+
   const [userCurrentGroupDetails, setUserCurrentGroupDetails] = useState(null);
+
   const [otherUserGroupDetails, setOtherUserGroupDetails] = useState(null);
 
   useEffect(() => {
@@ -26,10 +42,6 @@ export const BillSnapProvider = ({ children }) => {
       displayName: user?.displayName,
       uid: user?.uid,
       photoURL: user?.photoURL,
-      moneyToGet: 0,
-      moneyToGive: 0,
-      takeFrom: [],
-      giveTo: [],
     });
   };
 
@@ -50,18 +62,30 @@ export const BillSnapProvider = ({ children }) => {
       });
   };
 
+  const getAllInvolvedGroups = () => {
+    db.collection("groups")
+      .where("involvedMembers", "array-contains", currentUser)
+      .get()
+      .then((querySnapshot) => {
+        setAllInvolvedGroups(querySnapshot.docs);
+      });
+  };
+
   const getCurrentGroupDetails = async (groupID) => {
     const docRef = doc(db, "groups", groupID);
     const docSnap = await getDoc(docRef);
     setGroup(docSnap.data());
   };
 
-  const getUserCurrentGroupDetails = async (groupID) => {
-    getCurrentGroupDetails(groupID);
-    const data = group?.members.filter((item) => item.email == user.email);
-    if (data) {
-      setUserCurrentGroupDetails(data[0]);
-    }
+  const getUserCurrentGroupDetails = (groupID) => {
+    db.collection("groups")
+      .doc(groupID)
+      .collection("members")
+      .where("email", "==", user?.email)
+      .get()
+      .then((querySnapshot) => {
+        setUserCurrentGroupDetails(querySnapshot.docs[0].data());
+      });
   };
 
   const getOtherUserGroupDetails = async (groupID) => {
@@ -107,6 +131,8 @@ export const BillSnapProvider = ({ children }) => {
         otherUserGroupDetails,
         getOtherUserGroupDetails,
         updateUserMember,
+        getAllInvolvedGroups,
+        allInvolvedGroups,
       }}
     >
       {children}
