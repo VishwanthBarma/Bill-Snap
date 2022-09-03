@@ -12,6 +12,7 @@ function Members() {
       <div>
         {group?.involvedMembers?.map((member) => (
           <MemberCard
+            key={member.uid}
             photoURL={member?.photoURL}
             displayName={member?.displayName}
             email={member?.email}

@@ -14,6 +14,7 @@ function PaymentHistory() {
         <div>
           {currentGroupPayments?.map((payment) => (
             <PaymentHistoryCard
+              key={payment.id}
               paymentData={payment.data()}
               paymentID={payment.id}
             />
