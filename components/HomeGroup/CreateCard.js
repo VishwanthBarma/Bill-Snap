@@ -4,7 +4,7 @@ import { HiViewGridAdd } from "react-icons/hi";
 import ReactModal from "react-modal";
 import { BillSnapContext } from "../../context/BillSnapContext";
 import CreateGroupModal from "../Modal/CreateGroupModal";
-function CreateCard() {
+function CreateCard({ notification }) {
   const router = useRouter();
   const { user } = useContext(BillSnapContext);
   return (
@@ -41,7 +41,7 @@ function CreateCard() {
           },
         }}
       >
-        <CreateGroupModal />
+        <CreateGroupModal notification={notification} />
       </ReactModal>
     </div>
   );

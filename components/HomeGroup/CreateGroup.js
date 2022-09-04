@@ -1,6 +1,7 @@
 import { getAuth } from "firebase/auth";
 import React, { useContext, useEffect } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
+import toast, { Toaster } from "react-hot-toast";
 import { BillSnapContext } from "../../context/BillSnapContext";
 import { app, auth, db } from "../../firebase";
 import MiniLoading from "../Loading/MiniLoading";
@@ -8,22 +9,29 @@ import CreateCard from "./CreateCard";
 import GroupCard from "./GroupCard";
 
 function CreateGroup() {
-  const { user, currentUser, getAllInvolvedGroups, allInvolvedGroups } =
-    useContext(BillSnapContext);
+  const { user, currentUser } = useContext(BillSnapContext);
 
-  useEffect(() => {
-    getAllInvolvedGroups();
-  }, [allInvolvedGroups]);
+  const [allInvolvedGroupsSnapShot, loading] = useCollection(
+    db
+      .collection("groups")
+      .where("involvedMembers", "array-contains", currentUser)
+  );
+
+  const notification = () => {
+    toast.success("Group Created Successfully!");
+  };
 
   return (
     <div className="mt-10">
+      <Toaster />
+
       <h1 className="font-bold text-3xl">Your Bill Snap Groups</h1>
       <div className="flex mt-5 flex-wrap">
-        <CreateCard />
-        {allInvolvedGroups?.length == 0 ? (
+        <CreateCard notification={notification} />
+        {loading ? (
           <MiniLoading />
         ) : (
-          allInvolvedGroups?.map((group) => (
+          allInvolvedGroupsSnapShot?.docs?.map((group) => (
             <GroupCard key={group.id} group={group.data()} id={group.id} />
           ))
         )}

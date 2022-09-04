@@ -1,4 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import DashBoard from "../../components/Group/DashBoard/DashBoard";
@@ -10,13 +10,8 @@ import { BillSnapContext } from "../../context/BillSnapContext";
 import { db } from "../../firebase";
 
 function Group({ groupID }) {
-  const {
-    group,
-    getCurrentGroupDetails,
-    getUserCurrentGroupDetails,
-    userCurrentGroupDetails,
-    setAppStatus,
-  } = useContext(BillSnapContext);
+  const { group, getCurrentGroupDetails, getUserCurrentGroupDetails } =
+    useContext(BillSnapContext);
   const [selectedNav, setSelectedNav] = useState("dashboard");
   const router = useRouter();
 
@@ -34,7 +29,7 @@ function Group({ groupID }) {
       case "payments":
         return <Payments groupID={groupID} />;
       case "members":
-        return <Members />;
+        return <Members groupID={groupID} />;
       default:
         return <DashBoard groupID={groupID} />;
     }
@@ -55,6 +50,9 @@ function Group({ groupID }) {
             <h1 className="text-slate-300">
               <span className="font-semibold">{group?.groupLength}</span>{" "}
               members
+            </h1>
+            <h1 className="text-slate-400 text-xs">
+              {new Date(group?.timestamp.seconds * 1000).toDateString()}
             </h1>
           </div>
           <div className="flex pt-5 space-x-3 divide-x-2 divide-neutral-700">

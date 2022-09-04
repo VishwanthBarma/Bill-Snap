@@ -15,8 +15,6 @@ export const BillSnapProvider = ({ children }) => {
 
   const [group, setGroup] = useState(null);
 
-  const [allInvolvedGroups, setAllInvolvedGroups] = useState(null);
-
   const [userCurrentGroupDetails, setUserCurrentGroupDetails] = useState(null);
 
   const [currentGroupPayments, setCurrentGroupPayments] = useState(null);
@@ -53,15 +51,6 @@ export const BillSnapProvider = ({ children }) => {
       });
   };
 
-  const getAllInvolvedGroups = () => {
-    db.collection("groups")
-      .where("involvedMembers", "array-contains", currentUser)
-      .get()
-      .then((querySnapshot) => {
-        setAllInvolvedGroups(querySnapshot.docs);
-      });
-  };
-
   const getCurrentGroupDetails = async (groupID) => {
     const docRef = doc(db, "groups", groupID);
     const docSnap = await getDoc(docRef);
@@ -75,7 +64,7 @@ export const BillSnapProvider = ({ children }) => {
       .where("email", "==", user?.email)
       .get()
       .then((querySnapshot) => {
-        setUserCurrentGroupDetails(querySnapshot.docs[0].data());
+        setUserCurrentGroupDetails(querySnapshot.docs[0]?.data());
       });
   };
 
@@ -104,8 +93,6 @@ export const BillSnapProvider = ({ children }) => {
         getUserCurrentGroupDetails,
         getCurrentGroupDetails,
         userCurrentGroupDetails,
-        getAllInvolvedGroups,
-        allInvolvedGroups,
         getCurrentGroupPayments,
         currentGroupPayments,
       }}

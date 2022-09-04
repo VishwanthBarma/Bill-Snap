@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import Select from "react-select";
 import { BillSnapContext } from "../../context/BillSnapContext";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import Multiselect from "multiselect-react-dropdown";
+import toast, { Toaster } from "react-hot-toast";
+import { serverTimestamp } from "firebase/firestore";
+import { useRouter } from "next/router";
 
-function CreateGroupModal() {
+function CreateGroupModal({ notification }) {
   const { user, currentUser } = useContext(BillSnapContext);
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [selectedGroupMembers, setSelectedGroupMembers] = useState();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -29,12 +32,14 @@ function CreateGroupModal() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     db.collection("groups")
       .add({
         title: title,
         totalExpense: 0,
         groupLength: selectedGroupMembers.length + 1,
         involvedMembers: [...selectedGroupMembers, currentUser],
+        timestamp: serverTimestamp(),
       })
       .then((doc) => {
         selectedGroupMembers.forEach((groupMember) => {
@@ -64,6 +69,8 @@ function CreateGroupModal() {
 
     setTitle("");
     setSelectedGroupMembers([]);
+    router.back();
+    notification();
   };
 
   const multiSelectStyles = {
@@ -90,7 +97,7 @@ function CreateGroupModal() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center bg-neutral-900 p-10 rounded-xl">
+    <div className="flex flex-col items-center bg-neutral-900 p-10 h-96 rounded-xl">
       <h1 className="font-bold text-2xl sub-head">Create Group</h1>
       <div className="flex mt-5">
         <form

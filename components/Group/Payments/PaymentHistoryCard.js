@@ -5,10 +5,16 @@ import { db } from "../../../firebase";
 import { useRouter } from "next/router";
 import WaveLoading from "../../Loading/WaveLoading";
 import { BillSnapContext } from "../../../context/BillSnapContext";
+import ReactModal from "react-modal";
+import PayModal from "../../Modal/PayModal";
+import { GoPrimitiveDot } from "react-icons/go";
+import toast, { Toaster } from "react-hot-toast";
 
 function PaymentHistoryCard({ paymentData, paymentID }) {
   const { user } = useContext(BillSnapContext);
   const router = useRouter();
+
+  // console.log(router.pathname);
 
   const [amIPaid, setAmIPaid] = useState(null);
 
@@ -70,22 +76,61 @@ function PaymentHistoryCard({ paymentData, paymentID }) {
       );
     } else {
       return (
-        <button className="bg-sky-500 p-1 rounded-xl hover:bg-sky-400 active:bg-sky-600">
+        <button
+          onClick={() =>
+            router.push(`/groups/${groupID}/?payment=${paymentID}`)
+          }
+          className="bg-sky-500 p-1 rounded-xl hover:bg-sky-400 active:bg-sky-600 px-10"
+        >
           <h1 className="font-semibold">
             Pay{" "}
             <span className="text-lg font-bold">{paymentData.splitAmount}</span>{" "}
             INR
           </h1>
+          <ReactModal
+            isOpen={Boolean(router.query.payment)}
+            onRequestClose={() => router.back()}
+            style={{
+              content: {
+                top: "35%",
+                left: "50%",
+                right: "auto",
+                bottom: "auto",
+                padding: 0,
+                border: "none",
+                backgroundColor: "",
+                transform: "translate(-50%, -50%)",
+              },
+              overlay: {
+                backgroundColor: "#334250a7",
+              },
+            }}
+          >
+            <PayModal
+              notification={notification}
+              paymentData={paymentData}
+              paymentID={paymentID}
+              groupID={groupID}
+            />
+          </ReactModal>
         </button>
       );
     }
   };
 
+  const notification = () => {
+    toast.success("Paid Successfully!");
+  };
+
   return (
     <div className="flex flex-col">
+      <Toaster />
       <div className="bg-zinc-800 bg-opacity-80 flex flex-col p-3 rounded-xl text-neutral-400 m-3">
-        <h1 className="font-bold text-lg sub-head2">
+        <h1 className="font-bold text-lg text-sky-500">
           {paymentData?.paymentTitle}
+        </h1>
+        <h1 className="text-xs mb-4">
+          {new Date(paymentData?.timestamp.seconds * 1000).toDateString()}
         </h1>
         <div>
           <h1>
@@ -95,19 +140,32 @@ function PaymentHistoryCard({ paymentData, paymentID }) {
             </span>
           </h1>
         </div>
-        <h1 className="flex items-center">
-          Selected members{" "}
-          <span className="font-semibold text-md text-slate-100 ml-2">
-            {loading ? <WaveLoading /> : membersSnapShot?.docs.length}
-          </span>
-        </h1>
         <h1>
           Amount: <span className="text-slate-300">Rs.</span>
           <span className="font-semibold ml-1 text-lg text-slate-100">
             {paymentData?.paymentAmount}
           </span>
-          /-
         </h1>
+        <h1 className="flex items-center font-bold text-slate-200 mt-2 sub-head">
+          Selected members{" "}
+          <span className="font-semibold text-md text-slate-100 ml-2">
+            {loading ? <WaveLoading /> : membersSnapShot?.docs.length}
+          </span>
+        </h1>
+        <div className="bg-neutral-700 bg-opacity-40 p-3 mt-1 rounded-xl">
+          {membersSnapShot?.docs.map((member) => (
+            <div key={member.id} className="flex space-x-2 items-center">
+              <h1 className="font-semibold text-slate-300">
+                {member.data().displayName}
+              </h1>
+              <GoPrimitiveDot className="h-3 w-3" />
+              <h1 className="text-slate-200">
+                {member.data().amountToPay} <span>INR</span>
+              </h1>
+            </div>
+          ))}
+        </div>
+
         <div className="flex flex-col text-white mt-3">{showStatus()}</div>
       </div>
     </div>

@@ -1,26 +1,15 @@
-import { increment, updateDoc } from "firebase/firestore";
+import { increment, serverTimestamp, updateDoc } from "firebase/firestore";
 import Multiselect from "multiselect-react-dropdown";
-import { withRouter } from "next/router";
-import { userAgent } from "next/server";
 import React, { useContext, useEffect, useState } from "react";
-import Select from "react-select";
+import toast, { Toaster } from "react-hot-toast";
 import { BillSnapContext } from "../../../context/BillSnapContext";
 import { db } from "../../../firebase";
-import PaymentHistory from "../Payments/PaymentHistory";
-import TotalPayment from "../Payments/TotalPayment";
+import OwedDetails from "./OwedDetails";
 import UserBillDetails from "./UserBillDetails";
 
 function DashBoard({ groupID }) {
-  const {
-    group,
-    user,
-    getOtherUserGroupDetails,
-    updateUserMember,
-    userCurrentGroupDetails,
-    otherUserGroupDetails,
-    getCurrentGroupDetails,
-    getUserCurrentGroupDetails,
-  } = useContext(BillSnapContext);
+  const { group, user, getCurrentGroupDetails, getUserCurrentGroupDetails } =
+    useContext(BillSnapContext);
   const [amount, setAmount] = useState("");
   const [title, setTitle] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
@@ -32,11 +21,14 @@ function DashBoard({ groupID }) {
     getUserCurrentGroupDetails(groupID);
   }, [group]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+
+    const notification = toast.loading("Creating your payment...");
+
     if (selectedMembers.length == 0) return;
     const splitAmount = amount / (selectedMembers.length + 1);
-    const youAreOwedAmount = amount - splitAmount;
+    const yourOwedAmount = amount - splitAmount;
 
     db.collection("groups")
       .doc(groupID)
@@ -46,6 +38,7 @@ function DashBoard({ groupID }) {
         paymentAmount: amount,
         splitAmount: splitAmount,
         paidBy: user.displayName,
+        timestamp: serverTimestamp(),
       })
       .then((doc) => {
         selectedMembers.forEach((member) => {
@@ -68,6 +61,30 @@ function DashBoard({ groupID }) {
             .doc(groupID)
             .collection("members")
             .doc(member.email)
+            .collection("youOwed")
+            .add({
+              owedToEmail: user.email,
+              owedToName: user.displayName,
+              owedAmount: splitAmount,
+              paymentTitle: title,
+            });
+
+          db.collection("groups")
+            .doc(groupID)
+            .collection("members")
+            .doc(user.email)
+            .collection("youAreOwed")
+            .add({
+              owedByEmail: member.email,
+              owedByName: member.displayName,
+              owedAmount: splitAmount,
+              paymentTitle: title,
+            });
+
+          db.collection("groups")
+            .doc(groupID)
+            .collection("members")
+            .doc(member.email)
             .update({
               youOwed: increment(splitAmount),
             });
@@ -79,8 +96,9 @@ function DashBoard({ groupID }) {
       .collection("members")
       .doc(user.email)
       .update({
-        youAreOwed: increment(youAreOwedAmount),
+        youAreOwed: increment(yourOwedAmount),
       });
+
     // update total expanse
     db.collection("groups")
       .doc(groupID)
@@ -88,11 +106,15 @@ function DashBoard({ groupID }) {
         totalExpense: increment(amount),
       });
 
-    // ADD NOTIFICATION
+    // TODO ADD NOTIFICATION
 
     setAmount("");
     setTitle("");
     setSelectedMembers([]);
+
+    toast.success("Payment created successfully!", {
+      id: notification,
+    });
   };
 
   const getOptions = () => {
@@ -128,6 +150,7 @@ function DashBoard({ groupID }) {
 
   return (
     <div className="flex flex-col">
+      <Toaster />
       <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
         <div className="mb-4">
           <h1 className="font-bold text-lg ">Add Bill Payment</h1>
@@ -169,6 +192,7 @@ function DashBoard({ groupID }) {
         </button>
       </form>
       <UserBillDetails />
+      <OwedDetails />
     </div>
   );
 }
