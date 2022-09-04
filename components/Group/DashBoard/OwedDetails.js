@@ -40,18 +40,18 @@ function OwedDetails() {
       ) : (
         <div className="flex flex-col bg-neutral-800 p-2 rounded-xl items-center m-1 my-2">
           <h1 className="font-semibold text-sky-500">You Are Owed</h1>
-          <div className="mt-2  bg-neutral-900 p-3 rounded-xl w-full flex flex-col justify-center">
+          <div className="mt-2  bg-neutral-900 p-3 rounded-xl w-full flex flex-col divide-y-2 divide-neutral-500 justify-center text-center md:px-20">
             {youAreOwedSnapShot?.docs.length != 0 ? (
               youAreOwedSnapShot?.docs?.map((member) => (
                 <div
                   key={member.id}
-                  className="flex justify-between text-slate-300 w-full items-center"
+                  className="flex justify-center text-slate-300 w-full items-center py-1"
                 >
                   <h1 className="text-slate-100">{member.data().owedByName}</h1>
-                  <GoPrimitiveDot className="h-3 w-3" />
+                  <GoPrimitiveDot className="h-3 w-3 mx-2" />
 
                   <h1>Rs. {member.data().owedAmount}</h1>
-                  <GoPrimitiveDot className="h-3 w-3" />
+                  <GoPrimitiveDot className="h-3 w-3 mx-2" />
 
                   <h1>{member.data().paymentTitle}</h1>
                 </div>
@@ -67,12 +67,12 @@ function OwedDetails() {
       ) : (
         <div className="flex flex-col bg-neutral-800 p-2 rounded-xl items-center m-1 mb-10">
           <h1 className="font-semibold text-sky-500">You Owe</h1>
-          <div className="mt-2  bg-neutral-900 p-3 rounded-xl w-full flex flex-col justify-center">
+          <div className="mt-2  bg-neutral-900 p-3 rounded-xl w-full flex flex-col divide-y-2 divide-neutral-500 justify-center text-center md:px-20">
             {youOwedSnapShot?.docs.length != 0 ? (
               youOwedSnapShot?.docs?.map((member) => (
                 <div
                   key={member.id}
-                  className="flex justify-between text-slate-300 w-full items-center"
+                  className="flex justify-center text-slate-300 w-full items-center py-1"
                 >
                   <h1 className=" text-slate-100">
                     {member.data().owedToName}

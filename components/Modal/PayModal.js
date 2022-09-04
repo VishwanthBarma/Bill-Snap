@@ -1,13 +1,72 @@
-import React from "react";
+import React, { useContext } from "react";
 import GooglePayButton from "@google-pay/button-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import { db } from "../../firebase";
+import { BillSnapContext } from "../../context/BillSnapContext";
+import { doc, increment } from "firebase/firestore";
 
 function PayModal({ notification, paymentData, paymentID, groupID }) {
+  const { user } = useContext(BillSnapContext);
   const router = useRouter();
+
+  const maidId = paymentID + paymentData?.paidBy;
+  const maidId2 = paymentID + user?.displayName;
+
+  const updateYouOwed = () => {
+    db.collection("groups")
+      .doc(groupID)
+      .collection("members")
+      .doc(user?.email)
+      .update({
+        youOwed: increment(-paymentData.splitAmount),
+      });
+  };
+
+  const updateYouAreOwed = () => {
+    db.collection("groups")
+      .doc(groupID)
+      .collection("members")
+      .doc(paymentData?.paidByEmail)
+      .update({
+        youAreOwed: increment(-paymentData.splitAmount),
+      });
+  };
+
+  const updatePaid = () => {
+    db.collection("groups")
+      .doc(groupID)
+      .collection("payments")
+      .doc(paymentID)
+      .collection("selectedMembers")
+      .doc(user?.email)
+      .update({
+        paid: true,
+      });
+  };
+
   const handlePay = (e) => {
     e.preventDefault();
+
+    updateYouOwed();
+    updateYouAreOwed();
+    updatePaid();
+
+    db.collection("groups")
+      .doc(groupID)
+      .collection("members")
+      .doc(user?.email)
+      .collection("youOwed")
+      .doc(maidId)
+      .delete();
+
+    db.collection("groups")
+      .doc(groupID)
+      .collection("members")
+      .doc(paymentData.paidByEmail)
+      .collection("youAreOwed")
+      .doc(maidId2)
+      .delete();
 
     router.back();
     notification();

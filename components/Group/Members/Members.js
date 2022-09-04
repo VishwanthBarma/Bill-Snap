@@ -26,6 +26,8 @@ function Members({ groupID }) {
                 photoURL={member?.data().photoURL}
                 displayName={member?.data().displayName}
                 email={member?.data().email}
+                youOwed={member?.data().youOwed}
+                youAreOwed={member?.data().youAreOwed}
               />
             ))}
           </div>

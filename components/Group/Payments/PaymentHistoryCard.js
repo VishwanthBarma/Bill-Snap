@@ -30,7 +30,7 @@ function PaymentHistoryCard({ paymentData, paymentID }) {
 
   useEffect(() => {
     checkAmIPaid();
-  }, [paymentID]);
+  }, [paymentID, membersSnapShot]);
 
   const isPaidByMe = () => paymentData?.paidBy == user?.displayName;
 

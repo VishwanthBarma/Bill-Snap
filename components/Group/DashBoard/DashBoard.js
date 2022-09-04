@@ -39,9 +39,13 @@ function DashBoard({ groupID }) {
         splitAmount: splitAmount,
         paidBy: user.displayName,
         timestamp: serverTimestamp(),
+        paidByEmail: user.email,
       })
       .then((doc) => {
         selectedMembers.forEach((member) => {
+          const maidId = doc.id + member.displayName;
+          const maidId2 = doc.id + user.displayName;
+
           db.collection("groups")
             .doc(groupID)
             .collection("payments")
@@ -62,7 +66,8 @@ function DashBoard({ groupID }) {
             .collection("members")
             .doc(member.email)
             .collection("youOwed")
-            .add({
+            .doc(maidId2)
+            .set({
               owedToEmail: user.email,
               owedToName: user.displayName,
               owedAmount: splitAmount,
@@ -74,7 +79,8 @@ function DashBoard({ groupID }) {
             .collection("members")
             .doc(user.email)
             .collection("youAreOwed")
-            .add({
+            .doc(maidId)
+            .set({
               owedByEmail: member.email,
               owedByName: member.displayName,
               owedAmount: splitAmount,

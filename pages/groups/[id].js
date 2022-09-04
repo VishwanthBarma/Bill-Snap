@@ -52,6 +52,7 @@ function Group({ groupID }) {
               members
             </h1>
             <h1 className="text-slate-400 text-xs">
+              Created on -
               {new Date(group?.timestamp.seconds * 1000).toDateString()}
             </h1>
           </div>
