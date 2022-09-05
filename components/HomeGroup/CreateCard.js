@@ -13,9 +13,9 @@ function CreateCard({ notification }) {
         onClick={() =>
           router.push(`${router.pathname}/?creategroup=${user?.uid}`)
         }
-        className="active:opacity-50 hover:scale-105 transition ease-linear shadow-lg shadow-neutral-800 rounded-xl"
+        className="active:opacity-50 hover:scale-105 transition ease-linear rounded-xl"
       >
-        <div className="h-48 w-48 bg-black rounded-xl space-y-1 flex flex-col items-center justify-center group">
+        <div className="h-48 w-48 bg-black rounded-xl space-y-1 flex border-4 border-neutral-700 hover:border-neutral-500 border-dashed shadow-lg hover:shadow-neutral-800 flex-col items-center justify-center group">
           <HiViewGridAdd className="h-10 w-10 text-zinc-700 group-hover:text-zinc-300" />
           <h1 className="font-semibold text-zinc-700 group-hover:text-zinc-300">
             Create Group
