@@ -1,6 +1,6 @@
 import { increment, serverTimestamp, updateDoc } from "firebase/firestore";
 import Multiselect from "multiselect-react-dropdown";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BillSnapContext } from "../../../context/BillSnapContext";
 import { db } from "../../../firebase";
@@ -14,6 +14,7 @@ function DashBoard({ groupID }) {
   const [title, setTitle] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [options, setOptions] = useState([]);
+  const multiSelectRef = useRef();
 
   useEffect(() => {
     getOptions();
@@ -105,18 +106,16 @@ function DashBoard({ groupID }) {
         youAreOwed: increment(yourOwedAmount),
       });
 
-    // update total expanse
     db.collection("groups")
       .doc(groupID)
       .update({
         totalExpense: increment(amount),
       });
 
-    // TODO ADD NOTIFICATION
-
     setAmount("");
     setTitle("");
     setSelectedMembers([]);
+    multiSelectRef.current.resetSelectedValues();
 
     toast.success("Payment created successfully!", {
       id: notification,
@@ -184,6 +183,7 @@ function DashBoard({ groupID }) {
         ></input>
         <Multiselect
           avoidHighlightFirstOption={true}
+          ref={multiSelectRef}
           value={selectedMembers}
           style={multiSelectStyles}
           options={options}

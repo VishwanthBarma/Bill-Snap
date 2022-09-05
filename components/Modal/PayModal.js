@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import GooglePayButton from "@google-pay/button-react";
-import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import { db } from "../../firebase";
 import { BillSnapContext } from "../../context/BillSnapContext";
@@ -74,7 +73,6 @@ function PayModal({ notification, paymentData, paymentID, groupID }) {
 
   return (
     <div className="bg-neutral-900 p-3 rounded-xl w-72 flex items-center justify-center flex-col h-72">
-      <Toaster />
       <h1 className="font-semibold mb-3 text-xl">Payment</h1>
       <button
         onClick={(e) => handlePay(e)}

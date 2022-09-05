@@ -77,9 +77,9 @@ function OwedDetails() {
                   <h1 className=" text-slate-100">
                     {member.data().owedToName}
                   </h1>
-                  <GoPrimitiveDot className="h-3 w-3" />
+                  <GoPrimitiveDot className="h-3 w-3 mx-2" />
                   <h1>Rs. {member.data().owedAmount}</h1>
-                  <GoPrimitiveDot className="h-3 w-3" />
+                  <GoPrimitiveDot className="h-3 w-3 mx-2" />
                   <h1>{member.data().paymentTitle}</h1>
                 </div>
               ))

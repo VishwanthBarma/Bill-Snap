@@ -14,8 +14,6 @@ function PaymentHistoryCard({ paymentData, paymentID }) {
   const { user } = useContext(BillSnapContext);
   const router = useRouter();
 
-  // console.log(router.pathname);
-
   const [amIPaid, setAmIPaid] = useState(null);
 
   const groupID = router.query.id;

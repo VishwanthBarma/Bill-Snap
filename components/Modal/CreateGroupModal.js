@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { BillSnapContext } from "../../context/BillSnapContext";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import Multiselect from "multiselect-react-dropdown";
-import toast, { Toaster } from "react-hot-toast";
 import { serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/router";
 
@@ -13,6 +12,7 @@ function CreateGroupModal({ notification }) {
   const [title, setTitle] = useState("");
   const [selectedGroupMembers, setSelectedGroupMembers] = useState();
   const [submitLoading, setSubmitLoading] = useState(false);
+  const multiSelectRef = useRef();
 
   const [options, setOptions] = useState([]);
 
@@ -69,6 +69,7 @@ function CreateGroupModal({ notification }) {
 
     setTitle("");
     setSelectedGroupMembers([]);
+    multiSelectRef.current.resetSelectedValues();
     router.back();
     notification();
   };
@@ -118,6 +119,7 @@ function CreateGroupModal({ notification }) {
           {/* select members */}
           <Multiselect
             avoidHighlightFirstOption={true}
+            ref={multiSelectRef}
             style={multiSelectStyles}
             options={options}
             displayValue="displayName"

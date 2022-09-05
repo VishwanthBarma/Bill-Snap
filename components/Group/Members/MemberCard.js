@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { GoPrimitiveDot } from "react-icons/go";
-import { BillSnapContext } from "../../../context/BillSnapContext";
 import { db } from "../../../firebase";
 import WaveLoading from "../../Loading/WaveLoading";
 import { BsFillCaretDownFill, BsFillCaretUpFill } from "react-icons/bs";

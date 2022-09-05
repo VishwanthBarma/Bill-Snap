@@ -3,12 +3,12 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBmQKSTDSRmp1ljrA2iwBv5Tt-8W-C-_aY",
-  authDomain: "snap-bill-fde3a.firebaseapp.com",
+  apiKey: process.env.NEXT_PUBLIC_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
   projectId: "snap-bill-fde3a",
-  storageBucket: "snap-bill-fde3a.appspot.com",
-  messagingSenderId: "654441651488",
-  appId: "1:654441651488:web:b8397d5514311112374b45",
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGEING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_APP_ID,
 };
 
 const app = firebase.initializeApp(firebaseConfig);
