@@ -25,8 +25,10 @@ function CreateGroup() {
     <div className="mt-10">
       <Toaster />
 
-      <h1 className="font-bold text-3xl">Your Bill Snap Groups</h1>
-      <div className="flex mt-5 flex-wrap">
+      <h1 className="font-bold text-3xl text-center md:text-start">
+        Your Bill Snap Groups
+      </h1>
+      <div className="flex mt-5 md:flex-wrap flex-col md:flex-row items-center justify-center md:justify-start">
         <CreateCard notification={notification} />
         {loading ? (
           <MiniLoading />

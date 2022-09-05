@@ -2,7 +2,7 @@ import React from "react";
 
 function NavigationBar({ changeNav, nav }) {
   return (
-    <div className="flex flex-col items-start space-y-3">
+    <div className="flex md:flex-col items-start md:space-y-3 justify-between md:justify-start">
       <button
         onClick={() => changeNav("dashboard")}
         className={`font-semibold ${

@@ -56,9 +56,9 @@ function Group({ groupID }) {
               {new Date(group?.timestamp.seconds * 1000).toDateString()}
             </h1>
           </div>
-          <div className="flex pt-5 space-x-3 divide-x-2 divide-neutral-700">
+          <div className="flex flex-col md:flex-row pt-5 md:space-x-3 md:divide-x-2 md:divide-y-0 divide-y-2 md:space-y-0 space-y-3 divide-neutral-700">
             <NavigationBar changeNav={handleNavChange} nav={selectedNav} />
-            <div className="pl-3 w-full">{app(selectedNav)}</div>
+            <div className="md:pl-3 w-full pt-3">{app(selectedNav)}</div>
           </div>
         </div>
       ) : (

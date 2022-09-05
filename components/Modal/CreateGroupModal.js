@@ -10,7 +10,7 @@ function CreateGroupModal({ notification }) {
   const { user, currentUser } = useContext(BillSnapContext);
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [selectedGroupMembers, setSelectedGroupMembers] = useState();
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
   const multiSelectRef = useRef();
 
@@ -63,8 +63,6 @@ function CreateGroupModal({ notification }) {
             youAreOwed: 0,
             youOwed: 0,
           });
-
-        console.log("Written Document Successfully with ID: ", doc.id);
       });
 
     setTitle("");

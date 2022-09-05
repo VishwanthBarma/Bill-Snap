@@ -18,7 +18,7 @@ function BillCard() {
         </h1>
       </div>
       <div className="flex pt-3 space-x-4">
-        <div className="flex flex-col items-center bg-neutral-900 w-44 p-2 rounded-xl">
+        <div className="flex flex-col items-center bg-neutral-900 md:w-44 w-40 p-2 rounded-xl">
           <h1 className="font-semibold">You are owed</h1>
           <h1 className="font-semibold text-lg">
             Rs.{" "}
@@ -27,7 +27,7 @@ function BillCard() {
             </span>
           </h1>
         </div>
-        <div className="flex flex-col items-center bg-neutral-900 w-44 p-2 rounded-xl">
+        <div className="flex flex-col items-center bg-neutral-900 md:w-44 w-40 p-2 rounded-xl">
           <h1 className="font-semibold">You owe</h1>
           <h1 className="font-semibold text-lg">
             Rs.{" "}

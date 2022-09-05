@@ -40,9 +40,9 @@ function MemberCard({ photoURL, displayName, email, youOwed, youAreOwed }) {
       {!clickedMore && (
         <button
           onClick={() => setClickedMore(!clickedMore)}
-          className="bg-neutral-900 p-2 rounded-xl font-semibold text-sky-500 flex justify-center"
+          className="bg-neutral-900 p-2 rounded-xl font-semibold text-sky-500 group flex justify-center"
         >
-          <BsFillCaretDownFill className="h-5 w-5 text-sky-500" />
+          <BsFillCaretDownFill className="h-5 w-5 text-sky-500 animate-bounce group-hover:animate-none " />
         </button>
       )}
 
@@ -127,9 +127,9 @@ function MemberCard({ photoURL, displayName, email, youOwed, youAreOwed }) {
       {clickedMore && (
         <button
           onClick={() => setClickedMore(!clickedMore)}
-          className="bg-neutral-900 p-2 rounded-xl font-semibold text-sky-500 mt-1 flex justify-center"
+          className="bg-neutral-900 p-2 rounded-xl font-semibold group text-sky-500 mt-1 flex justify-center"
         >
-          <BsFillCaretUpFill className="h-5 w-5 text-sky-500" />
+          <BsFillCaretUpFill className="h-5 w-5 text-sky-500 animate-bounce  group-hover:animate-none" />
         </button>
       )}
     </div>
